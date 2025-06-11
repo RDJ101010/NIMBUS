@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>NIMBUS - Insider Threat Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f4;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      background-color: #333;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+  <h1>NIMBUS - Insider Threat Logs</h1>
+  <table id="logsTable">
+    <thead>
+      <tr>
+        <th>User</th>
+        <th>Action</th>
+        <th>Details</th>
+        <th>Timestamp</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    fetch('http://127.0.0.1:8000/logs')
+      .then(response => response.json())
+      .then(data => {
+        const tableBody = document.querySelector("#logsTable tbody");
+        data.forEach(entry => {
+          const row = document.createElement("tr");
+
+          row.innerHTML = `
+            <td>${entry.user || 'N/A'}</td>
+            <td>${entry.action || 'N/A'}</td>
+            <td>${entry.file || entry.details || '-'}</td>
+            <td>${entry.time || 'Unknown'}</td>
+          `;
+          tableBody.appendChild(row);
+        });
+      })
+      .catch(error => {
+        document.body.innerHTML = "<h2 style='color:red;'>Failed to connect to backend API</h2>";
+        console.error("API Error:", error);
+      });
+  </script>
+</body>
+</html>
